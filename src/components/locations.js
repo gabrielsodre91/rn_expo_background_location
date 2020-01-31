@@ -33,7 +33,7 @@ const Locations = ({ locations }) => {
 
             if (status === 'granted') {
                 await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-                    accuracy: Location.Accuracy.High,
+                    accuracy: Location.Accuracy.Highest,
                     timeInterval: 3000,
                     distanceInterval: 50,
                     foregroundService: {
@@ -41,6 +41,7 @@ const Locations = ({ locations }) => {
                         notificationBody: 'Rastreando sua posição'
                     },
                     pausesUpdatesAutomatically: false,
+                    activityType: Location.ActivityType.AutomotiveNavigation
                 });
             }
         }
@@ -160,12 +161,13 @@ const styles = StyleSheet.create({
 
 TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
     if (error) {
-        // Error occurred - check `error.message` for more details.
         console.log(error);
         return;
     }
 
     if (data) {
+        console.log('nova posição: ', data);
+
         const { latitude, longitude } = data.locations[0].coords;
 
         let ultimaLocalizacao = {
